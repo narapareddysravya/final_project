@@ -45,7 +45,7 @@ def authenticate(username, password):
 # Load model from Hugging Face
 @st.cache_resource
 def load_model():
-    model_path = hf_hub_download(repo_id="Sravya-narapareddy/lung_cancer", filename="model.pth")
+    model_path = hf_hub_download(repo_id="Sravya-narapareddy/lung_cancer", filename="model1.pth")
     model = timm.create_model('swin_base_patch4_window7_224', pretrained=False, num_classes=len(class_names))
     model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
     model.eval()
