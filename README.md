@@ -1,2 +1,2 @@
 # final_project
-lung cancers decttection 
+lung cancers dectection 
