@@ -68,46 +68,65 @@ def predict_image(image):
         confidence = torch.nn.functional.softmax(outputs, dim=1)[0][predicted.item()].item()
     return pred_class, confidence
 
-# UI
+# UI layout
 st.markdown("<h1 style='text-align: center;'>🫁 Lung Cancer Detector</h1>", unsafe_allow_html=True)
 
-if os.path.exists("assets/logo.png"):
-    st.image("assets/logo.png", width=120)
-
+# Sidebar
 menu = ["Login", "Register", "Predict"]
-choice = st.sidebar.selectbox("Menu", menu)
+choice = st.sidebar.selectbox("📋 Menu", menu)
 
+if st.session_state.logged_in:
+    st.sidebar.success(f"✅ Logged in as: {st.session_state.username}")
+    if st.sidebar.button("🚪 Logout"):
+        st.session_state.logged_in = False
+        st.session_state.username = ""
+        st.experimental_rerun()
+
+# Main sections
 if choice == "Register":
-    st.subheader("🔐 Register")
+    st.subheader("🔐 Create Account")
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
     if st.button("Register"):
         if register_user(username, password):
-            st.success("Registration successful. Please login.")
+            st.success("✅ Registration successful. Please log in.")
         else:
-            st.error("Username already taken.")
+            st.error("❌ Username already exists.")
 
 elif choice == "Login":
-    st.subheader("🔓 Login")
+    st.subheader("🔓 Login to Continue")
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
     if st.button("Login"):
         if authenticate(username, password):
-            st.success(f"Welcome {username}")
+            st.success(f"🎉 Welcome back, {username}!")
             st.session_state.logged_in = True
             st.session_state.username = username
+            st.experimental_rerun()
         else:
-            st.error("Invalid credentials.")
+            st.error("❌ Invalid username or password.")
 
 elif choice == "Predict":
     if st.session_state.logged_in:
-        st.subheader(f"Welcome, **{st.session_state.username}** 👋")
-        uploaded_file = st.file_uploader("Upload Chest X-ray", type=["jpg", "png", "jpeg"])
+        st.subheader("📷 Upload Chest X-ray")
+        uploaded_file = st.file_uploader("Upload an image", type=["jpg", "png", "jpeg"])
         if uploaded_file:
-            img = Image.open(uploaded_file).convert("RGB")
-            st.image(img, caption="Uploaded Image", use_column_width=True)
-            pred_class, confidence = predict_image(img)
-            st.success(f"🩻 Prediction: `{pred_class}`")
-            st.info(f"Confidence: `{confidence*100:.2f}%`")
+            if uploaded_file.size > 2 * 1024 * 1024:  # 2MB limit
+                st.error("⚠️ Image too large! Please upload an image smaller than 2MB.")
+            else:
+                img = Image.open(uploaded_file).convert("RGB")
+                st.image(img, caption="📎 Uploaded Image", use_column_width=True)
+                pred_class, confidence = predict_image(img)
+                st.success(f"🩻 **Prediction**: `{pred_class}`")
+                st.info(f"🔍 **Confidence**: `{confidence * 100:.2f}%`")
     else:
-        st.warning("Please log in to access prediction.")
+        st.warning("🔑 Please login to access prediction features.")
+
+# Footer
+st.markdown(
+    """<hr style="border:1px solid #ddd"/>
+    <p style="text-align:center;font-size:12px;">
+    Developed with ❤️ by <b>Your Name</b> • Powered by Hugging Face & Streamlit
+    </p>""",
+    unsafe_allow_html=True
+)
