@@ -126,7 +126,7 @@ elif choice == "Predict":
 st.markdown(
     """<hr style="border:1px solid #ddd"/>
     <p style="text-align:center;font-size:12px;">
-    Developed with good will by <h3>AIML</h3> • Powered by Hugging Face & Streamlit
+    Developed with good will by <b>AIML</b> • Powered by Hugging Face & Streamlit
     </p>""",
     unsafe_allow_html=True
 )
