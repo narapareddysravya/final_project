@@ -108,7 +108,7 @@ elif choice == "Login":
 
 elif choice == "Predict":
     if st.session_state.logged_in:
-        st.subheader("📷 Upload Chest X-ray")
+        st.subheader("📷 Upload Chest CT-Scan")
         uploaded_file = st.file_uploader("Upload an image", type=["jpg", "png", "jpeg"])
         if uploaded_file:
             if uploaded_file.size > 2 * 1024 * 1024:  # 2MB limit
